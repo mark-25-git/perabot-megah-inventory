@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perabot Megah Inventory System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Perabot Megah Inventory System</h1>
+            <p>Modern inventory management solution</p>
+        </header>
+
+        <!-- Navigation Cards -->
+        <main class="main-content">
+            <div class="card-grid">
+                <!-- Dashboard Card -->
+                <div class="nav-card" onclick="showPage('dashboard')">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h2>Dashboard</h2>
+                    <p>View inventory statistics, sales trends, low stock alerts, and movement records across all locations.</p>
+                    <div class="card-action">
+                        View Dashboard <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <!-- Admin Card -->
+                <div class="nav-card" onclick="showPage('admin')">
+                    <div class="card-icon admin">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h2>Admin Control</h2>
+                    <p>Manage inventory operations including transfers, receiving, adjustments, and sales recording.</p>
+                    <div class="card-action">
+                        Access Admin <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" onclick="showPage('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <h1>Dashboard</h1>
+                <button class="refresh-btn" onclick="loadDashboard()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            
+            <div class="loading" id="dashboard-loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading Dashboard...
+            </div>
+            
+            <div id="dashboard-content" class="hidden">
+                <!-- Dashboard content will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Admin Page -->
+        <div id="admin-page" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" onclick="showPage('home')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <h1>Admin Control</h1>
+            </div>
+
+            <!-- Admin Tabs -->
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="showAdminTab('transfer')">
+                    <i class="fas fa-exchange-alt"></i> Transfer
+                </button>
+                <button class="tab-btn" onclick="showAdminTab('receiving')">
+                    <i class="fas fa-truck"></i> Receiving
+                </button>
+                <button class="tab-btn" onclick="showAdminTab('adjustment')">
+                    <i class="fas fa-edit"></i> Adjustment
+                </button>
+                <button class="tab-btn" onclick="showAdminTab('sale')">
+                    <i class="fas fa-shopping-cart"></i> Sale
+                </button>
+            </div>
+
+            <!-- Admin Content -->
+            <div id="admin-content">
+                <!-- Admin forms will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div id="toast-container"></div>
+    </div>
+
+    <!-- Load Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="api.js"></script>
+    <script src="dashboard.js"></script>
+    <script src="admin.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <title>Perabot Megah Dashboard</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        :root {
+            --gap: 1.5rem; /* Consistent spacing */
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --primary-color: #007bff;
+            --text-color: #333;
+            --secondary-text-color: #555;
+            --border-color: #eee;
+            --success-bg: #d4edda;
+            --success-text: #155724;
+            --error-bg: #f8d7da;
+            --error-text: #721c24;
+            --warning-bg: #fff3cd;
+            --warning-text: #856404;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: var(--gap);
+            color: var(--text-color);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: var(--gap);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: var(--primary-color);
+        }
+        .header p {
+            font-size: 1.2rem;
+            color: var(--secondary-text-color);
+            margin: 0.25rem 0 1rem 0;
+        }
+        .header button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.2s ease;
+            margin-top: 1rem;
+        }
+        .header button:hover {
+            background-color: #0056b3;
+        }
+
+        .last-updated-info {
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+            margin-top: 0.5rem;
+        }
+
+        .location-section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: var(--gap);
+            margin-bottom: var(--gap);
+        }
+
+        .location-section h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+            margin-bottom: var(--gap);
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--gap);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card h3 {
+            font-size: 1.3rem;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            text-align: center;
+            flex-grow: 1;
+        }
+        .stat-card h4 {
+            font-size: 3.5rem;
+            margin: 1rem 0;
+            color: var(--primary-color);
+        }
+
+        /* List Cards */
+        .list-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            flex-grow: 1;
+        }
+        .list-card li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .list-card li:last-child {
+            border-bottom: none;
+        }
+        .sku-name {
+            font-weight: 500;
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        .sku-count {
+            font-weight: 600;
+            background-color: #e9ecef;
+            padding: 0.3rem 0.8rem;
+            border-radius: 16px;
+            min-width: 40px;
+            text-align: center;
+        }
+        .low-stock .sku-count {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+        }
+        .top-seller .sku-count {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+        .accumulated-sales .sku-count, .movement-record .sku-count, .inactive-sku .sku-count {
+             background-color: #e9ecef;
+             color: var(--text-color);
+        }
+
+
+        /* Chart Cards */
+        .chart-card {
+            min-height: 350px;
+            grid-column: 1 / -1;
+        }
+        .chart-container {
+            height: 300px;
+            width: 100%;
+        }
+
+        .loader {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.5rem;
+            color: var(--secondary-text-color);
+            grid-column: 1 / -1;
+        }
+        .error {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid var(--error-text);
+        }
+
+        /* Sales Trend Toggle */
+        .sales-trend-toggle {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .sales-trend-toggle button {
+            background-color: #f0f0f0;
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .sales-trend-toggle button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .sales-trend-toggle button:not(.active):hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Movement Record Specific Styling */
+        .movement-record ul {
+            max-height: 400px; /* Adjust as needed */
+        }
+        .movement-record li {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+        .movement-record .record-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .movement-record .record-details {
+            width: 100%;
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+        }
+        .movement-record .record-quantity {
+            font-weight: 700;
+            padding: 0.3rem 0.8rem;
+            border-radius: 16px;
+            min-width: 40px;
+            text-align: center;
+            background-color: #d1ecf1; /* Light blue for movements */
+            color: #0c5460;
+        }
+        .movement-record li.mode-RECEIVING .record-quantity { background-color: var(--success-bg); color: var(--success-text); }
+        .movement-record li.mode-TRANSFER .record-quantity { background-color: var(--warning-bg); color: var(--warning-text); }
+        .movement-record li.mode-ADJUSTMENT .record-quantity { background-color: #cce5ff; color: #004085; }
+
+
+        /* Mobile responsiveness adjustments */
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 2rem; }
+            .stat-card h4 { font-size: 3rem; }
+            .dashboard-container { grid-template-columns: 1fr; }
+            .chart-card { min-height: 250px; }
+            .chart-container { height: 200px; }
+            .movement-record li { align-items: stretch; }
+            .movement-record .record-header, .movement-record .record-details {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="dashboard">
+        <div class="loader">🚀 Loading Dashboard...</div>
+    </div>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart', 'table'] });
+        google.charts.setOnLoadCallback(fetchAndBuildAllDashboards);
+
+        const FIXED_LOW_STOCK_THRESHOLD = 20;
+        let dashboardData = null; // Store fetched data globally for toggling
+
+        // --- Main Data Fetch and Build Function ---
+        function fetchAndBuildAllDashboards() {
+            const dashboardDiv = document.getElementById('dashboard');
+            dashboardDiv.innerHTML = '<div class="loader">🚀 Loading Dashboard...</div>'; // Show loader
+
+            google.script.run
+                .withSuccessHandler(data => {
+                    dashboardData = data; // Store data
+                    buildDashboard(data);
+                })
+                .withFailureHandler(error => {
+                    dashboardDiv.innerHTML = `<div class="card error"><h3>Error</h3><p>${error.message || 'An unknown error occurred while fetching data.'}</p></div>`;
+                    console.error("Dashboard data fetch error:", error);
+                })
+                .getDashboardDataForAllLocations();
+        }
+
+        // --- Function to Build the Entire Dashboard HTML ---
+        function buildDashboard(data) {
+            const dashboard = document.getElementById('dashboard');
+            dashboard.innerHTML = ''; // Clear loader
+
+            if (data.error) {
+                dashboard.innerHTML = `<div class="card error"><h3>Error</h3><p>${data.error}</p></div>`;
+                return;
+            }
+
+            // Main Header
+            const headerHtml = `
+                <div class="header">
+                    <h1>Perabot Megah Dashboard</h1>
+                    <p class="last-updated-info">Last Updated: <strong>${data.lastUpdatedOverall || 'N/A'}</strong></p>
+                    <button onclick="fetchAndBuildAllDashboards()">Refresh All Data</button>
+                </div>`;
+            dashboard.innerHTML += headerHtml;
+
+            // --- Section 1: Overview ---
+            dashboard.innerHTML += `
+                <div class="location-section" id="overview-section">
+                    <h2>Overview</h2>
+                    <div class="dashboard-container">
+                        <div class="card stat-card">
+                            <h3>Total Sales Today (Shop Only)</h3>
+                            <h4>${data.overall.salesToday}</h4>
+                        </div>
+                        <div class="card stat-card">
+                            <h3>Total Inventory (Overall)</h3>
+                            <h4>${data.overall.totalStock}</h4>
+                        </div>
+                        <div class="card chart-card">
+                            <h3>Total Sales Trend</h3>
+                            <div class="sales-trend-toggle">
+                                <button id="toggle7Days" onclick="toggleSalesTrend(7)" class="active">Last 7 Days</button>
+                                <button id="toggle30Days" onclick="toggleSalesTrend(30)">Last 30 Days</button>
+                            </div>
+                            <div id="overallSalesTrendChart" class="chart-container"></div>
+                        </div>
+                        
+                    </div>
+                </div>`;
+
+            // --- Section 2: Shop Information ---
+            dashboard.innerHTML += `
+                <div class="location-section" id="shop-section">
+                    <h2>Shop</h2>
+                    <div class="dashboard-container">
+                        <div class="card stat-card">
+                            <h3>Shop Stock Quantity</h3>
+                            <h4>${data.shop.totalStock}</h4>
+                        </div>
+                        <div class="card stat-card">
+                            <h3>Shop Sales Today</h3>
+                            <h4>${data.shop.salesToday}</h4>
+                        </div>
+                        <div class="card chart-card">
+                            <h3>Top 5 Selling SKU Today (Shop)</h3>
+                            <div id="shopSalesBySkuChart" class="chart-container"></div>
+                        </div>
+                        <div class="card list-card">
+                            <h3>Total Sales Accumulated (Shop)</h3>
+                            <ul id="shopTotalSalesList">${populateList(data.shop.totalSalesAccumulated, 'No sales data for shop yet.', 'accumulated-sales', 'totalSold')}</ul>
+                        </div>
+                        <div class="card list-card">
+                            <h3>Total Inventory (Shop Only)</h3>
+                            <ul id="shopInventoryList">${populateList(data.shop.inventory, 'No items in shop inventory.', 'inventory', 'stock')}</ul>
+                        </div>
+                        <div class="card list-card">
+                            <h3>Low-stock Alert (Shop Only) (Below ${FIXED_LOW_STOCK_THRESHOLD})</h3>
+                            <ul id="shopLowStockList">${populateList(data.shop.lowStock, 'No shop items are low on stock.', 'low-stock', 'stock')}</ul>
+                        </div>
+                    </div>
+                </div>`;
+
+            // --- Section 3: Warehouse ---
+            dashboard.innerHTML += `
+                <div class="location-section" id="warehouse-section">
+                    <h2>Warehouse</h2>
+                    <div class="dashboard-container">
+                        <div class="card stat-card">
+                            <h3>Warehouse Stock Quantity</h3>
+                            <h4>${data.warehouse.totalStock}</h4>
+                        </div>
+                        <div class="card list-card">
+                            <h3>Total Inventory (Warehouse Only)</h3>
+                            <ul id="warehouseInventoryList">${populateList(data.warehouse.inventory, 'No items in warehouse inventory.', 'inventory', 'stock')}</ul>
+                        </div>
+                        <div class="card list-card">
+                            <h3>Low-stock Alert (Warehouse Only) (Below ${FIXED_LOW_STOCK_THRESHOLD})</h3>
+                            <ul id="warehouseLowStockList">${populateList(data.warehouse.lowStock, 'No warehouse items are low on stock.', 'low-stock', 'stock')}</ul>
+                        </div>
+                        <div class="card list-card movement-record">
+                            <h3>Movement Record (Last 30 Days)</h3>
+                            <ul id="warehouseMovementRecordsList">${populateMovementRecordsList(data.warehouse.movementRecords, 'No movement records found.')}</ul>
+                        </div>
+                    </div>
+                </div>`;
+
+            // --- Section 4: Inactive SKUs ---
+            dashboard.innerHTML += `
+                <div class="location-section" id="inactive-skus-section">
+                    <h2>Inactive SKUs</h2>
+                    <div class="dashboard-container">
+                        <div class="card list-card inactive-sku">
+                            <h3>SKU In Stock but No Sales in Last 14 Days</h3>
+                            <ul id="inactiveSkusList">${populateList(data.inactiveSkus, 'All in-stock SKUs have recent sales.', 'inactive-sku', 'stock')}</ul>
+                        </div>
+                    </div>
+                </div>`;
+
+            // Draw Charts
+            drawSalesTrendChart(data.overall.salesTrendData7Days, 'overallSalesTrendChart'); // Default to 7 days
+            drawSalesBySkuChart(data.shop.topSellingSkus, 'shopSalesBySkuChart', 'Top 5 Selling SKUs (Shop)');
+
+        }
+
+        // --- Helper function to populate generic lists ---
+        function populateList(items, emptyMessage, typeClass, quantityKey = 'stock') {
+            if (!items || items.length === 0) return `<li>${emptyMessage}</li>`;
+            return items.map(item => `
+                <li class="${typeClass}">
+                    <span class="sku-name">${item.productName || item.sku}</span>
+                    <span class="sku-count">${item[quantityKey]}</span>
+                </li>`).join('');
+        }
+
+        // --- Helper function to populate movement records list ---
+        function populateMovementRecordsList(records, emptyMessage) {
+            if (!records || records.length === 0) return `<li>${emptyMessage}</li>`;
+            return records.map(record => `
+                <li class="mode-${record.mode}">
+                    <div class="record-header">
+                        <span>${record.productName || record.sku}</span>
+                        <span class="record-quantity">${record.quantity}</span>
+                    </div>
+                    <div class="record-details">
+                        <span>${record.mode} from ${record.source} to ${record.destination} by ${record.user}</span>
+                        <span>${record.timestamp}</span>
+                    </div>
+                </li>`).join('');
+        }
+
+
+        // --- Chart Drawing Functions ---
+        function drawSalesTrendChart(salesTrendData, elementId) {
+            const data = google.visualization.arrayToDataTable(salesTrendData);
+            const options = {
+                title: 'Daily Sales Quantity',
+                curveType: 'none',
+                legend: { position: 'bottom' },
+                hAxis: { title: 'Date' },
+                vAxis: { title: 'Quantity Sold', minValue: 0 },
+                colors: ['#3498db'],
+                chartArea: { width: '85%', height: '70%' },
+                fontName: 'Segoe UI'
+            };
+            const chart = new google.visualization.LineChart(document.getElementById(elementId));
+            chart.draw(data, options);
+        }
+
+        function drawSalesBySkuChart(topSellingSkus, elementId, chartTitle) {
+            const chartData = [['SKU', 'Total Sold']];
+            topSellingSkus.forEach(item => {
+                chartData.push([item.productName || item.sku, item.totalSold]);
+            });
+
+            const data = google.visualization.arrayToDataTable(chartData);
+            const options = {
+                title: chartTitle,
+                pieHole: 0.4, // Donut chart
+                colors: ['#2ecc71', '#f39c12', '#9b59b6', '#e74c3c', '#1abc9c', '#95a5a6'], // Added color for 'Other'
+                legend: { position: 'right' },
+                chartArea: { width: '80%', height: '80%' },
+                fontName: 'Segoe UI',
+                tooltip: { text: 'value' } // Show quantity on hover
+            };
+            const chart = new google.visualization.PieChart(document.getElementById(elementId));
+            chart.draw(data, options);
+        }
+
+        // --- Sales Trend Toggle Function ---
+        function toggleSalesTrend(days) {
+            if (!dashboardData) return; // Ensure data is loaded
+
+            const chartElementId = 'overallSalesTrendChart';
+            const chartData = days === 7 ? dashboardData.overall.salesTrendData7Days : dashboardData.overall.salesTrendData30Days;
+            drawSalesTrendChart(chartData, chartElementId);
+
+            // Update active button styling
+            document.getElementById('toggle7Days').classList.remove('active');
+            document.getElementById('toggle30Days').classList.remove('active');
+            document.getElementById(`toggle${days}Days`).classList.add('active');
+        }
+
+    </script>
+</body>
+</html>

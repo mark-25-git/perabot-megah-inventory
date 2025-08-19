@@ -1,0 +1,42 @@
+/**
+ * Main entry point for the web app.
+ * Directs users to the appropriate interface based on URL parameters.
+ * e.g., ".../exec?page=admin" will show the Admin UI.
+ * By default, it shows the Scanner UI.
+ *
+ * @param {object} e The event parameter from the web request.
+ */
+function doGet(e) {
+  if (e.parameter.page === 'admin') {
+    return showAdminUI();
+  }
+  if (e.parameter.page === 'dashboard') {
+    return showDashboardUI();
+  }
+  // Default to the scanner UI
+  return showScannerUI();
+}
+
+/**
+ * This is a one-time setup function to create the 'On Change' trigger programmatically.
+ * Run this function once from the script editor to install the trigger.
+ */
+function createOnChangeTrigger() {
+  const SPREADSHEET_ID = "1t8eqdoMh9_1l6DnvD_tqagMWWz0Ctci-_0nz4tqP86g"; // Your Spreadsheet ID
+
+  // Deletes any existing triggers for this function to prevent duplicates
+  const allTriggers = ScriptApp.getProjectTriggers();
+  for (const trigger of allTriggers) {
+    if (trigger.getHandlerFunction() === 'updateInventorySnapshot') {
+      ScriptApp.deleteTrigger(trigger);
+    }
+  }
+
+  // Creates the new trigger
+  ScriptApp.newTrigger('updateInventorySnapshot') // The function to run
+    .forSpreadsheet(SPREADSHEET_ID)                // The spreadsheet to watch
+    .onChange()                                    // The event type
+    .create();                                     // Create it!
+
+  Logger.log('On Change trigger created successfully.');
+}
