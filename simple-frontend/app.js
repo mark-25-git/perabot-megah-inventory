@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Load SKUs for autocomplete
 async function loadSkus() {
     try {
-        const response = await api.getAllSkus();
+        const response = await apiService.getAllSkus();
         if (response.success) {
             skuList = response.data || [];
         }
@@ -68,7 +68,7 @@ async function loadSkus() {
 // Load inventory snapshot for stock display
 async function loadInventorySnapshot() {
     try {
-        const response = await api.getInventorySnapshot();
+        const response = await apiService.getInventorySnapshot();
         if (response.success) {
             inventorySnapshot = response.data || {};
         }

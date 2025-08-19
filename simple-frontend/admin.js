@@ -307,7 +307,7 @@ async function handleFormSubmit(e, tabName) {
     submitBtn.textContent = 'Processing...';
     
     try {
-        const response = await api.processAdminAction(formData);
+        const response = await apiService.processAdminAction(formData);
         
         if (response.success && response.data.success) {
             showToast(response.data.message, 'success');
@@ -456,7 +456,7 @@ async function submitAllSales() {
     submitBtn.textContent = 'Processing...';
     
     try {
-        const response = await api.processAdminAction({
+        const response = await apiService.processAdminAction({
             mode: 'bulk-sale',
             sales: saleItems,
             notes: notes

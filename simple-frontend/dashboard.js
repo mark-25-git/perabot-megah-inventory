@@ -6,7 +6,7 @@ async function loadDashboard() {
     document.getElementById('dashboard-content').classList.add('hidden');
     
     try {
-        const response = await api.getDashboardData();
+        const response = await apiService.getDashboardData();
         
         if (response.success) {
             dashboardData = response.data;
