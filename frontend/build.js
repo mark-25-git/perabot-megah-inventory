@@ -32,5 +32,27 @@ filesToCopy.forEach(file => {
   }
 });
 
+// Also copy the API directory to public for Vercel to find
+const apiSourceDir = path.join(__dirname, 'api');
+const apiDestDir = path.join(outputDir, 'api');
+
+if (fs.existsSync(apiSourceDir)) {
+  if (!fs.existsSync(apiDestDir)) {
+    fs.mkdirSync(apiDestDir, { recursive: true });
+  }
+  
+  const apiFiles = fs.readdirSync(apiSourceDir);
+  apiFiles.forEach(file => {
+    const sourcePath = path.join(apiSourceDir, file);
+    const destPath = path.join(apiDestDir, file);
+    
+    if (fs.statSync(sourcePath).isFile()) {
+      fs.copyFileSync(sourcePath, destPath);
+      console.log(`✅ Copied API file ${file} to public/api directory`);
+    }
+  });
+}
+
 console.log('🎉 Build completed successfully!');
 console.log('📁 Output directory:', outputDir);
+console.log('📁 API directory:', apiDestDir);

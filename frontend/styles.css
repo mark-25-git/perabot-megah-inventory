@@ -7,426 +7,351 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ========================================
-   DESIGN SYSTEM IMPORTS
+   CSS CUSTOM PROPERTIES (DESIGN TOKENS)
    ======================================== */
 
-/* Core design tokens and utilities */
-@import url('./design-system.css');
-
-/* Component library */
-@import url('./components.css');
-
-/* Layout and page structure */
-@import url('./layout.css');
-
-/* ========================================
-   CUSTOM OVERRIDES & ADDITIONS
-   ======================================== */
-
-/* Additional mobile-specific enhancements */
-@media (max-width: 768px) {
-  /* Increase touch targets for mobile */
-  .btn,
-  .tab-btn,
-  .location-btn {
-    min-height: 44px;
-    min-width: 44px;
-  }
+:root {
+  /* ===== COLOR PALETTE ===== */
   
-  /* Improve table scrolling on mobile */
-  .table-responsive {
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: var(--neutral-300) var(--neutral-100);
-  }
+  /* Primary Colors */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
   
-  .table-responsive::-webkit-scrollbar {
-    height: 6px;
-  }
+  /* Secondary Colors */
+  --secondary-50: #ecfdf5;
+  --secondary-100: #d1fae5;
+  --secondary-200: #a7f3d0;
+  --secondary-300: #6ee7b7;
+  --secondary-400: #34d399;
+  --secondary-500: #10b981;
+  --secondary-600: #059669;
+  --secondary-700: #047857;
+  --secondary-800: #065f46;
+  --secondary-900: #064e3b;
   
-  .table-responsive::-webkit-scrollbar-track {
-    background: var(--neutral-100);
-    border-radius: 3px;
-  }
+  /* Neutral Colors */
+  --neutral-50: #f9fafb;
+  --neutral-100: #f3f4f6;
+  --neutral-200: #e5e7eb;
+  --neutral-300: #d1d5db;
+  --neutral-400: #9ca3af;
+  --neutral-500: #6b7280;
+  --neutral-600: #4b5563;
+  --neutral-700: #374151;
+  --neutral-800: #1f2937;
+  --neutral-900: #111827;
   
-  .table-responsive::-webkit-scrollbar-thumb {
-    background: var(--neutral-300);
-    border-radius: 3px;
-  }
+  /* ===== TYPOGRAPHY ===== */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
   
-  .table-responsive::-webkit-scrollbar-thumb:hover {
-    background: var(--neutral-400);
-  }
-}
-
-/* ========================================
-   PERFORMANCE OPTIMIZATIONS
-   ======================================== */
-
-/* Optimize animations for better performance */
-.btn,
-.nav-card,
-.stat-card,
-.card {
-  will-change: transform;
-}
-
-/* Optimize transitions */
-.btn,
-.form-input,
-.form-select,
-.form-textarea {
-  will-change: border-color, box-shadow;
-}
-
-/* ========================================
-   BROWSER COMPATIBILITY
-   ======================================== */
-
-/* Fallback for older browsers that don't support CSS Grid */
-@supports not (display: grid) {
-  .card-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-8);
-  }
+  /* Font Sizes */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
   
-  .card-grid > * {
-    flex: 1 1 320px;
-    max-width: 400px;
-  }
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
   
-  .stats-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-6);
-  }
+  /* ===== SPACING ===== */
+  --space-1: 0.25rem;    /* 4px */
+  --space-2: 0.5rem;     /* 8px */
+  --space-3: 0.75rem;    /* 12px */
+  --space-4: 1rem;       /* 16px */
+  --space-5: 1.25rem;    /* 20px */
+  --space-6: 1.5rem;     /* 24px */
+  --space-8: 2rem;       /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-20: 5rem;      /* 80px */
   
-  .stats-grid > * {
-    flex: 1 1 250px;
-  }
+  /* ===== BORDERS ===== */
+  --border-width: 1px;
+  --border-radius-sm: 0.125rem;   /* 2px */
+  --border-radius: 0.25rem;       /* 4px */
+  --border-radius-md: 0.375rem;   /* 6px */
+  --border-radius-lg: 0.5rem;     /* 8px */
+  --border-radius-xl: 0.75rem;    /* 12px */
+  --border-radius-2xl: 1rem;      /* 16px */
   
-  .form-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-  }
+  /* ===== SHADOWS ===== */
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   
-  .form-row > * {
-    flex: 1 1 calc(50% - var(--space-2));
-  }
+  /* ===== TRANSITIONS ===== */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
   
-  .form-row.full-width > * {
-    flex: 1 1 100%;
-  }
-}
-
-/* Fallback for browsers that don't support CSS custom properties */
-@supports not (--custom: property) {
-  :root {
-    --primary-600: #2563eb;
-    --primary-700: #1d4ed8;
-    --primary-800: #1e40af;
-    --secondary-500: #10b981;
-    --secondary-600: #059669;
-    --neutral-50: #f9fafb;
-    --neutral-100: #f3f4f6;
-    --neutral-200: #e5e7eb;
-    --neutral-300: #d1d5db;
-    --neutral-400: #9ca3af;
-    --neutral-500: #6b7280;
-    --neutral-600: #4b5563;
-    --neutral-700: #374151;
-    --neutral-800: #1f2937;
-    --neutral-900: #111827;
-    --success-500: #10b981;
-    --success-600: #059669;
-    --warning-500: #f59e0b;
-    --warning-600: #d97706;
-    --error-500: #ef4444;
-    --error-600: #dc2626;
-    --info-500: #3b82f6;
-    --info-600: #2563eb;
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.25rem;
-    --space-6: 1.5rem;
-    --space-8: 2rem;
-    --space-10: 2.5rem;
-    --space-12: 3rem;
-    --space-16: 4rem;
-    --space-20: 5rem;
-    --space-24: 6rem;
-    --text-xs: 0.75rem;
-    --text-sm: 0.875rem;
-    --text-base: 1rem;
-    --text-lg: 1.125rem;
-    --text-xl: 1.25rem;
-    --text-2xl: 1.5rem;
-    --text-3xl: 1.875rem;
-    --text-4xl: 2.25rem;
-    --text-5xl: 3rem;
-    --font-light: 300;
-    --font-normal: 400;
-    --font-medium: 500;
-    --font-semibold: 600;
-    --font-bold: 700;
-    --font-extrabold: 800;
-    --leading-tight: 1.25;
-    --leading-normal: 1.5;
-    --leading-relaxed: 1.625;
-    --border-radius: 0.375rem;
-    --border-radius-sm: 0.25rem;
-    --border-radius-md: 0.5rem;
-    --border-radius-lg: 0.75rem;
-    --border-radius-xl: 1rem;
-    --border-radius-2xl: 1.5rem;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --transition-fast: 150ms ease-in-out;
-    --transition-normal: 250ms ease-in-out;
-    --transition-slow: 350ms ease-in-out;
-  }
+  /* ===== LAYOUT ===== */
+  --container-max-width: 1200px;
+  --container-padding: 1rem;
 }
 
 /* ========================================
-   PRINT OPTIMIZATIONS
+   BASE STYLES
    ======================================== */
 
-@media print {
-  /* Ensure proper page breaks */
-  .page,
-  .card,
-  .stat-card,
-  .chart-container {
-    page-break-inside: avoid;
-  }
-  
-  /* Optimize colors for printing */
-  .btn-primary,
-  .btn-success,
-  .btn-warning,
-  .btn-danger {
-    background: white !important;
-    color: black !important;
-    border: 1px solid black !important;
-  }
-  
-  /* Ensure text is readable */
-  .text-primary,
-  .text-secondary,
-  .text-success,
-  .text-warning,
-  .text-error,
-  .text-info {
-    color: black !important;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--neutral-900);
+  background-color: var(--neutral-50);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ========================================
-   DARK MODE SUPPORT (FUTURE)
+   COMPONENT LIBRARY
    ======================================== */
 
-@media (prefers-color-scheme: dark) {
-  /* This can be expanded in the future for dark mode support */
-  /* For now, we'll keep the light theme as default */
+/* ===== BUTTONS ===== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  line-height: var(--leading-tight);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  touch-action: manipulation;
 }
 
-/* ========================================
-   HIGH DPI DISPLAYS
-   ======================================== */
-
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  /* Ensure crisp rendering on high DPI displays */
-  .card-icon i,
-  .btn i,
-  .tab-btn i {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-}
-
-/* ========================================
-   ACCESSIBILITY ENHANCEMENTS
-   ======================================== */
-
-/* Ensure sufficient color contrast */
-.btn-primary,
-.btn-success,
-.btn-warning,
-.btn-danger {
-  color: white;
-}
-
-/* Focus visible for keyboard navigation */
-.btn:focus-visible,
-.form-input:focus-visible,
-.form-select:focus-visible,
-.form-textarea:focus-visible,
-.tab-btn:focus-visible,
-.location-btn:focus-visible {
+.btn:focus {
   outline: 2px solid var(--primary-500);
   outline-offset: 2px;
 }
 
-/* Skip link for screen readers */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 6px;
-  background: var(--primary-600);
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Button Variants */
+.btn-primary {
+  background-color: var(--primary-600);
   color: white;
-  padding: 8px;
-  text-decoration: none;
-  border-radius: var(--border-radius);
-  z-index: 10000;
 }
 
-.skip-link:focus {
-  top: 6px;
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-700);
+}
+
+.btn-secondary {
+  background-color: var(--neutral-100);
+  color: var(--neutral-700);
+  border-color: var(--neutral-300);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--neutral-200);
+}
+
+.btn-success {
+  background-color: var(--secondary-600);
+  color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: var(--secondary-700);
+}
+
+/* ===== CARDS ===== */
+
+.card {
+  background: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--neutral-200);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--neutral-200);
+  background-color: var(--neutral-50);
+}
+
+.card-title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  color: var(--neutral-900);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.card-body {
+  padding: var(--space-6);
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+.mb-6 { margin-bottom: var(--space-6); }
+.mt-6 { margin-top: var(--space-6); }
+
+.text-center { text-align: center; }
+.text-sm { font-size: var(--text-sm); }
+.text-gray-500 { color: var(--neutral-500); }
+.text-gray-600 { color: var(--neutral-600); }
+
+.flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
+.gap-4 { gap: var(--space-4); }
+
+.overflow-x-auto { overflow-x: auto; }
+
+.min-w-full { min-width: 100%; }
+.bg-white { background-color: white; }
+.border { border: 1px solid var(--neutral-200); }
+.rounded-lg { border-radius: var(--border-radius-lg); }
+
+.bg-gray-50 { background-color: var(--neutral-50); }
+.px-4 { padding-left: var(--space-4); padding-right: var(--space-4); }
+.py-3 { padding-top: var(--space-3); padding-bottom: var(--space-3); }
+.text-xs { font-size: var(--text-xs); }
+.font-medium { font-weight: var(--font-medium); }
+.text-gray-500 { color: var(--neutral-500); }
+.uppercase { text-transform: uppercase; }
+.tracking-wider { letter-spacing: 0.05em; }
+
+.divide-y { border-top-width: 1px; }
+.divide-gray-200 { border-color: var(--neutral-200); }
+
+.py-4 { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+.whitespace-nowrap { white-space: nowrap; }
+.text-gray-900 { color: var(--neutral-900); }
+
+.hover\:bg-gray-50:hover { background-color: var(--neutral-50); }
+
+/* ========================================
+   LAYOUT & PAGE STRUCTURE
+   ======================================== */
+
+.app {
+  min-height: 100vh;
+  background-color: var(--neutral-50);
+}
+
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+.main-content {
+  padding: var(--space-6) 0;
+}
+
+/* ===== HEADER ===== */
+
+.header {
+  text-align: center;
+  margin-bottom: var(--space-12);
+  padding: var(--space-8) 0;
+  background: white;
+  border-radius: var(--border-radius-2xl);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--neutral-200);
+}
+
+.header h1 {
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--text-4xl);
+  font-weight: var(--font-bold);
+  color: var(--primary-700);
+}
+
+.header p {
+  margin: 0;
+  font-size: var(--text-lg);
+  color: var(--neutral-600);
 }
 
 /* ========================================
-   LOADING STATES
+   RESPONSIVE DESIGN
    ======================================== */
 
-/* Skeleton loading animation */
-@keyframes skeleton-loading {
-  0% {
-    background-position: -200px 0;
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--space-4);
   }
-  100% {
-    background-position: calc(200px + 100%) 0;
+  
+  .header {
+    margin-bottom: var(--space-8);
+    padding: var(--space-6) 0;
   }
-}
-
-.skeleton {
-  background: linear-gradient(90deg, var(--neutral-200) 25%, var(--neutral-100) 50%, var(--neutral-200) 75%);
-  background-size: 200px 100%;
-  animation: skeleton-loading 1.5s infinite;
-  border-radius: var(--border-radius);
-}
-
-.skeleton-text {
-  height: 1em;
-  margin-bottom: var(--space-2);
-}
-
-.skeleton-text:last-child {
-  margin-bottom: 0;
-}
-
-.skeleton-text.short {
-  width: 60%;
-}
-
-.skeleton-text.medium {
-  width: 80%;
-}
-
-.skeleton-text.long {
-  width: 100%;
-}
-
-/* ========================================
-   ANIMATION UTILITIES
-   ======================================== */
-
-.fade-in {
-  animation: fadeIn var(--transition-normal) ease-in-out;
-}
-
-.slide-up {
-  animation: slideUp var(--transition-normal) ease-out;
-}
-
-.slide-down {
-  animation: slideDown var(--transition-normal) ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+  
+  .header h1 {
+    font-size: var(--text-3xl);
   }
-  to {
-    opacity: 1;
+  
+  .card-header,
+  .card-body {
+    padding: var(--space-4);
+  }
+  
+  .btn {
+    padding: var(--space-4);
+    font-size: var(--text-base);
   }
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: var(--text-2xl);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .card-header,
+  .card-body {
+    padding: var(--space-3);
   }
 }
-
-/* ========================================
-   UTILITY CLASSES
-   ======================================== */
-
-/* Display utilities */
-.d-block { display: block !important; }
-.d-inline-block { display: inline-block !important; }
-.d-inline { display: inline !important; }
-.d-flex { display: flex !important; }
-.d-inline-flex { display: inline-flex !important; }
-.d-grid { display: grid !important; }
-.d-none { display: none !important; }
-
-/* Position utilities */
-.position-relative { position: relative !important; }
-.position-absolute { position: absolute !important; }
-.position-fixed { position: fixed !important; }
-.position-sticky { position: sticky !important; }
-
-/* Overflow utilities */
-.overflow-hidden { overflow: hidden !important; }
-.overflow-auto { overflow: auto !important; }
-.overflow-scroll { overflow: scroll !important; }
-.overflow-x-auto { overflow-x: auto !important; }
-.overflow-y-auto { overflow-y: auto !important; }
-
-/* Cursor utilities */
-.cursor-pointer { cursor: pointer !important; }
-.cursor-default { cursor: default !important; }
-.cursor-not-allowed { cursor: not-allowed !important; }
-
-/* User select utilities */
-.user-select-none { user-select: none !important; }
-.user-select-text { user-select: text !important; }
-.user-select-all { user-select: all !important; }
-
-/* Pointer events utilities */
-.pointer-events-none { pointer-events: none !important; }
-.pointer-events-auto { pointer-events: auto !important; }
-
-/* Z-index utilities */
-.z-0 { z-index: 0 !important; }
-.z-10 { z-index: 10 !important; }
-.z-20 { z-index: 20 !important; }
-.z-30 { z-index: 30 !important; }
-.z-40 { z-index: 40 !important; }
-.z-50 { z-index: 50 !important; }
-.z-auto { z-index: auto !important; }
-
-/* ========================================
-   END OF STYLESHEET
-   ======================================== */
