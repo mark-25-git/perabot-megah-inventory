@@ -24,6 +24,11 @@ class InventoryApp {
         document.getElementById('debug-api').addEventListener('click', () => {
             this.debugAPI();
         });
+
+        // Add Google Sheets test button
+        document.getElementById('test-google-sheets').addEventListener('click', () => {
+            this.testGoogleSheets();
+        });
     }
 
     logEnvironmentInfo() {
@@ -62,6 +67,37 @@ class InventoryApp {
             console.error('❌ Connection test failed:', error);
             this.updateConnectionStatus('❌ Connection failed: ' + error.message, 'error');
             this.showToast('Connection failed: ' + error.message, 'error');
+        }
+    }
+
+    async testGoogleSheets() {
+        this.updateConnectionStatus('Testing Google Sheets connection...', 'info');
+        this.showToast('Testing Google Sheets connection...', 'info');
+
+        try {
+            console.log('🔍 Testing Google Sheets connection...');
+            
+            // Test the new Google Sheets test endpoint
+            console.log('Testing /api/testGoogleSheets...');
+            const response = await fetch('/api/testGoogleSheets');
+            console.log('Google Sheets test response status:', response.status);
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Google Sheets test response data:', data);
+                this.updateConnectionStatus('✅ Google Sheets connection successful!', 'success');
+                this.showToast('Google Sheets connection successful!', 'success');
+            } else {
+                const errorData = await response.json();
+                console.error('Google Sheets test failed:', errorData);
+                this.updateConnectionStatus(`❌ Google Sheets failed: ${errorData.error}`, 'error');
+                this.showToast(`Google Sheets failed: ${errorData.error}`, 'error');
+            }
+
+        } catch (error) {
+            console.error('❌ Google Sheets test failed:', error);
+            this.updateConnectionStatus('❌ Google Sheets test failed: ' + error.message, 'error');
+            this.showToast('Google Sheets test failed: ' + error.message, 'error');
         }
     }
 
@@ -191,6 +227,7 @@ class InventoryApp {
         switch (type) {
             case 'success': return 'bg-green-500 text-white';
             case 'error': return 'bg-red-500 text-white';
+            case 'warning': return 'bg-yellow-500 text-white';
             case 'info': return 'bg-blue-500 text-white';
             default: return 'bg-gray-500 text-white';
         }
