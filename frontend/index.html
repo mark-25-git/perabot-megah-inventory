@@ -19,60 +19,86 @@
             <!-- Connection Status -->
             <div class="card mb-6">
                 <div class="card-header">
-                    <h3 class="card-title">Connection Status</h3>
+                    <h3 class="card-title">
+                        <i class="fas fa-wifi"></i>
+                        Connection Status
+                    </h3>
                 </div>
                 <div class="card-body">
-                    <div id="connection-status" class="alert alert-info">
-                        <div class="alert-icon">
-                            <i class="fas fa-info-circle"></i>
-                        </div>
-                        <div class="alert-content">
-                            <div class="alert-title">Testing Connection</div>
-                            <div class="alert-message">Click the button below to test Google Sheets connection</div>
-                        </div>
+                    <div id="connection-status" class="text-sm font-medium text-gray-600">
+                        Ready to test connection...
                     </div>
-                    
-                    <div class="flex gap-4">
+                </div>
+            </div>
+
+            <!-- Test Buttons -->
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-cogs"></i>
+                        API Testing
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="flex flex-wrap gap-4">
                         <button id="test-connection" class="btn btn-primary">
-                            <i class="fas fa-plug"></i> Test Connection
+                            <i class="fas fa-plug"></i>
+                            Test Connection
                         </button>
-                        <button id="fetch-inventory" class="btn btn-secondary">
-                            <i class="fas fa-database"></i> Fetch Inventory Data
+                        <button id="debug-api" class="btn btn-secondary">
+                            <i class="fas fa-bug"></i>
+                            Debug API
+                        </button>
+                        <button id="fetch-inventory" class="btn btn-success">
+                            <i class="fas fa-database"></i>
+                            Fetch Inventory Data
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- Data Display -->
-            <div class="card mb-6">
+            <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Fetched Data</h3>
+                    <h3 class="card-title">
+                        <i class="fas fa-table"></i>
+                        Inventory Data
+                    </h3>
                 </div>
                 <div class="card-body">
-                    <div id="data-display">
-                        <div class="text-center text-neutral-500">
-                            <i class="fas fa-database text-4xl mb-4"></i>
-                            <p>No data fetched yet. Click the buttons above to test the connection.</p>
-                        </div>
+                    <div id="inventory-data" class="text-center text-gray-500">
+                        <i class="fas fa-inbox text-4xl mb-4"></i>
+                        <p>Click "Fetch Inventory Data" to load data from Google Sheets</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Raw Response -->
-            <div class="card">
+            <!-- Debug Info -->
+            <div class="card mt-6">
                 <div class="card-header">
-                    <h3 class="card-title">Raw API Response</h3>
+                    <h3 class="card-title">
+                        <i class="fas fa-info-circle"></i>
+                        Debug Information
+                    </h3>
                 </div>
                 <div class="card-body">
-                    <pre id="raw-response" class="bg-neutral-100 p-4 rounded text-sm overflow-auto">No response yet</pre>
+                    <div class="text-sm text-gray-600">
+                        <p><strong>Current URL:</strong> <span id="current-url"></span></p>
+                        <p><strong>API Base:</strong> <span id="api-base">/api</span></p>
+                        <p><strong>User Agent:</strong> <span id="user-agent"></span></p>
+                        <p><strong>Platform:</strong> <span id="platform"></span></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Container -->
-    <div id="toast-container"></div>
-
     <script src="app.js"></script>
+    <script>
+        // Display debug info
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('user-agent').textContent = navigator.userAgent;
+        document.getElementById('platform').textContent = navigator.platform;
+    </script>
 </body>
 </html>

@@ -8,6 +8,7 @@ class InventoryApp {
     init() {
         this.bindEvents();
         this.showToast('MVP loaded successfully!', 'success');
+        this.logEnvironmentInfo();
     }
 
     bindEvents() {
@@ -18,6 +19,20 @@ class InventoryApp {
         document.getElementById('fetch-inventory').addEventListener('click', () => {
             this.fetchInventoryData();
         });
+
+        // Add debug button
+        document.getElementById('debug-api').addEventListener('click', () => {
+            this.debugAPI();
+        });
+    }
+
+    logEnvironmentInfo() {
+        console.log('=== ENVIRONMENT INFO ===');
+        console.log('Current URL:', window.location.href);
+        console.log('Base URL:', this.baseUrl);
+        console.log('User Agent:', navigator.userAgent);
+        console.log('Platform:', navigator.platform);
+        console.log('========================');
     }
 
     async testConnection() {
@@ -25,21 +40,56 @@ class InventoryApp {
         this.showToast('Testing connection...', 'info');
 
         try {
-            // Test basic connectivity
-            const response = await fetch(`${this.baseUrl}/test`);
+            // Test multiple endpoints
+            console.log('🔍 Testing API endpoints...');
             
-            if (response.ok) {
-                const data = await response.json();
-                this.updateConnectionStatus('Connection successful!', 'success');
+            // Test 1: Basic test endpoint
+            console.log('Testing /api/test...');
+            const testResponse = await fetch('/api/test');
+            console.log('Test response status:', testResponse.status);
+            console.log('Test response headers:', testResponse.headers);
+            
+            if (testResponse.ok) {
+                const testData = await testResponse.json();
+                console.log('Test response data:', testData);
+                this.updateConnectionStatus('✅ Connection successful!', 'success');
                 this.showToast('Connection successful!', 'success');
-                this.updateRawResponse(data);
             } else {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                throw new Error(`HTTP ${testResponse.status}: ${testResponse.statusText}`);
             }
+
         } catch (error) {
-            console.error('Connection test failed:', error);
-            this.updateConnectionStatus(`Connection failed: ${error.message}`, 'error');
-            this.showToast(`Connection failed: ${error.message}`, 'error');
+            console.error('❌ Connection test failed:', error);
+            this.updateConnectionStatus('❌ Connection failed: ' + error.message, 'error');
+            this.showToast('Connection failed: ' + error.message, 'error');
+        }
+    }
+
+    async debugAPI() {
+        this.updateConnectionStatus('Debugging API...', 'info');
+        this.showToast('Debugging API...', 'info');
+
+        try {
+            console.log('🔍 Debugging API endpoints...');
+            
+            // Test debug endpoint
+            console.log('Testing /api/debug...');
+            const debugResponse = await fetch('/api/debug');
+            console.log('Debug response status:', debugResponse.status);
+            
+            if (debugResponse.ok) {
+                const debugData = await debugResponse.json();
+                console.log('Debug response data:', debugData);
+                this.updateConnectionStatus('✅ Debug endpoint working!', 'success');
+                this.showToast('Debug endpoint working!', 'success');
+            } else {
+                throw new Error(`HTTP ${debugResponse.status}: ${debugResponse.statusText}`);
+            }
+
+        } catch (error) {
+            console.error('❌ Debug failed:', error);
+            this.updateConnectionStatus('❌ Debug failed: ' + error.message, 'error');
+            this.showToast('Debug failed: ' + error.message, 'error');
         }
     }
 
@@ -48,135 +98,102 @@ class InventoryApp {
         this.showToast('Fetching inventory data...', 'info');
 
         try {
-            const response = await fetch(`${this.baseUrl}/getInventory`);
+            const response = await fetch('/api/getInventory');
             
             if (response.ok) {
                 const data = await response.json();
-                this.updateConnectionStatus('Data fetched successfully!', 'success');
-                this.showToast('Data fetched successfully!', 'success');
-                this.displayInventoryData(data);
-                this.updateRawResponse(data);
+                console.log('Inventory data received:', data);
+                
+                if (data.success && data.data) {
+                    this.displayInventoryData(data.data);
+                    this.updateConnectionStatus(`✅ Loaded ${data.data.length} items`, 'success');
+                    this.showToast(`Successfully loaded ${data.data.length} inventory items!`, 'success');
+                } else {
+                    throw new Error(data.error || 'No data received');
+                }
             } else {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
+
         } catch (error) {
-            console.error('Failed to fetch inventory:', error);
-            this.updateConnectionStatus(`Failed to fetch data: ${error.message}`, 'error');
-            this.showToast(`Failed to fetch data: ${error.message}`, 'error');
+            console.error('❌ Failed to fetch inventory:', error);
+            this.updateConnectionStatus('❌ Failed to fetch inventory: ' + error.message, 'error');
+            this.showToast('Failed to fetch inventory: ' + error.message, 'error');
         }
+    }
+
+    displayInventoryData(inventory) {
+        const container = document.getElementById('inventory-data');
+        
+        if (!inventory || inventory.length === 0) {
+            container.innerHTML = '<p class="text-center text-gray-500">No inventory data found.</p>';
+            return;
+        }
+
+        const table = `
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        ${inventory.map(item => `
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.sku || '-'}</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${item.name || '-'}</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">${item.category || '-'}</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">${item.quantity || 0}</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500">${item.location || '-'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        
+        container.innerHTML = table;
     }
 
     updateConnectionStatus(message, type) {
         const statusElement = document.getElementById('connection-status');
-        const iconElement = statusElement.querySelector('.alert-icon i');
-        const titleElement = statusElement.querySelector('.alert-title');
-        const messageElement = statusElement.querySelector('.alert-message');
-
-        // Update alert type
-        statusElement.className = `alert alert-${type}`;
-        
-        // Update icon
-        const icons = {
-            info: 'fa-info-circle',
-            success: 'fa-check-circle',
-            warning: 'fa-exclamation-triangle',
-            error: 'fa-times-circle'
-        };
-        iconElement.className = `fas ${icons[type] || 'fa-info-circle'}`;
-        
-        // Update content
-        titleElement.textContent = type === 'success' ? 'Success!' : 
-                                 type === 'error' ? 'Error!' : 
-                                 type === 'warning' ? 'Warning!' : 'Info';
-        messageElement.textContent = message;
+        statusElement.textContent = message;
+        statusElement.className = `text-sm font-medium ${this.getStatusColor(type)}`;
     }
 
-    displayInventoryData(data) {
-        const displayElement = document.getElementById('data-display');
-        
-        if (!data || !data.items || data.items.length === 0) {
-            displayElement.innerHTML = `
-                <div class="text-center text-neutral-500">
-                    <i class="fas fa-inbox text-4xl mb-4"></i>
-                    <p>No inventory items found.</p>
-                </div>
-            `;
-            return;
+    getStatusColor(type) {
+        switch (type) {
+            case 'success': return 'text-green-600';
+            case 'error': return 'text-red-600';
+            case 'info': return 'text-blue-600';
+            default: return 'text-gray-600';
         }
-
-        // Create a simple table to display the data
-        let tableHTML = `
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>SKU</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Quantity</th>
-                            <th>Location</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
-
-        data.items.forEach(item => {
-            tableHTML += `
-                <tr>
-                    <td>${item.sku || 'N/A'}</td>
-                    <td>${item.name || 'N/A'}</td>
-                    <td>${item.category || 'N/A'}</td>
-                    <td>${item.quantity || '0'}</td>
-                    <td>${item.location || 'N/A'}</td>
-                </tr>
-            `;
-        });
-
-        tableHTML += `
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4 text-sm text-neutral-600">
-                <strong>Total Items:</strong> ${data.items.length}
-            </div>
-        `;
-
-        displayElement.innerHTML = tableHTML;
     }
 
-    updateRawResponse(data) {
-        const rawElement = document.getElementById('raw-response');
-        rawElement.textContent = JSON.stringify(data, null, 2);
-    }
-
-    showToast(message, type = 'info') {
-        const toastContainer = document.getElementById('toast-container');
-        
+    showToast(message, type) {
         const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.innerHTML = `
-            <i class="fas fa-${this.getToastIcon(type)}"></i>
-            <span>${message}</span>
-        `;
-
-        toastContainer.appendChild(toast);
-
-        // Auto-remove after 5 seconds
+        toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${this.getToastColor(type)}`;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
         setTimeout(() => {
-            if (toast.parentNode) {
-                toast.parentNode.removeChild(toast);
-            }
-        }, 5000);
+            toast.remove();
+        }, 3000);
     }
 
-    getToastIcon(type) {
-        const icons = {
-            success: 'check-circle',
-            error: 'times-circle',
-            warning: 'exclamation-triangle',
-            info: 'info-circle'
-        };
-        return icons[type] || 'info-circle';
+    getToastColor(type) {
+        switch (type) {
+            case 'success': return 'bg-green-500 text-white';
+            case 'error': return 'bg-red-500 text-white';
+            case 'info': return 'bg-blue-500 text-white';
+            default: return 'bg-gray-500 text-white';
+        }
     }
 }
 
@@ -184,32 +201,3 @@ class InventoryApp {
 document.addEventListener('DOMContentLoaded', () => {
     new InventoryApp();
 });
-
-// Add some utility functions for development
-window.debugApp = {
-    testLocalConnection: async () => {
-        console.log('Testing local connection...');
-        try {
-            const response = await fetch('/api/test');
-            const data = await response.json();
-            console.log('Local API response:', data);
-            return data;
-        } catch (error) {
-            console.error('Local API error:', error);
-            return null;
-        }
-    },
-    
-    testGoogleSheets: async () => {
-        console.log('Testing Google Sheets connection...');
-        try {
-            const response = await fetch('/api/getInventory');
-            const data = await response.json();
-            console.log('Google Sheets data:', data);
-            return data;
-        } catch (error) {
-            console.error('Google Sheets error:', error);
-            return null;
-        }
-    }
-};
