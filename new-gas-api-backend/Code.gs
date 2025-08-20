@@ -5,15 +5,26 @@
  */
 
 /**
+ * Handles OPTIONS requests for CORS preflight
+ */
+function doOptions(e) {
+  return ContentService
+    .createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
+/**
  * Handles GET requests - primarily for data retrieval
  * Examples:
- * - /exec?action=getDashboard
- * - /exec?action=getAllSkus
- * - /exec?action=getInventorySnapshot
+ * - GET with action=getDashboard
+ * - GET with action=getAllSkus
+ * - GET with action=getInventorySnapshot
+ * - GET with action=getLowStockData
  */
 function doGet(e) {
   try {
     const action = e.parameter.action;
+    Logger.log('doGet called with action: ' + action);
     
     const response = {
       success: true,
@@ -24,38 +35,62 @@ function doGet(e) {
 
     switch (action) {
       case 'getDashboard':
-        response.data = getDashboardDataForAllLocations();
+        Logger.log('Calling getDashboardDataForAllLocations...');
+        if (typeof getDashboardDataForAllLocations === 'function') {
+          response.data = getDashboardDataForAllLocations();
+        } else {
+          throw new Error('getDashboardDataForAllLocations function not found');
+        }
         break;
         
       case 'getAllSkus':
-        response.data = getAllSkus();
+        Logger.log('Calling getAllSkus...');
+        if (typeof getAllSkus === 'function') {
+          response.data = getAllSkus();
+        } else {
+          throw new Error('getAllSkus function not found');
+        }
         break;
         
       case 'getInventorySnapshot':
-        response.data = getInventorySnapshotData();
+        Logger.log('Calling getInventorySnapshotData...');
+        if (typeof getInventorySnapshotData === 'function') {
+          response.data = getInventorySnapshotData();
+        } else {
+          throw new Error('getInventorySnapshotData function not found');
+        }
         break;
         
-      case 'getLowStock':
-        response.data = getLowStockDataForAllLocations();
+      case 'getLowStockData':
+        Logger.log('Calling getLowStockDataForAllLocations...');
+        if (typeof getLowStockDataForAllLocations === 'function') {
+          response.data = getLowStockDataForAllLocations();
+        } else {
+          throw new Error('getLowStockDataForAllLocations function not found');
+        }
         break;
         
       default:
         response.success = false;
-        response.message = 'Invalid action specified';
+        response.message = 'Invalid action specified: ' + action;
         break;
     }
 
+    Logger.log('Response prepared successfully');
     return ContentService
       .createTextOutput(JSON.stringify(response))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
     Logger.log('doGet Error: ' + error.message);
+    Logger.log('Error stack: ' + error.stack);
+    
     const errorResponse = {
       success: false,
       data: null,
       message: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      errorType: error.constructor.name
     };
     
     return ContentService
@@ -71,6 +106,8 @@ function doGet(e) {
  */
 function doPost(e) {
   try {
+    Logger.log('doPost called with data: ' + e.postData.contents);
+    
     const postData = JSON.parse(e.postData.contents);
     const action = postData.action;
     
@@ -83,28 +120,37 @@ function doPost(e) {
 
     switch (action) {
       case 'processAdmin':
-        response.data = processAdminAction(postData.data);
-        response.message = response.data.message;
-        response.success = response.data.success;
+        Logger.log('Calling processAdminAction...');
+        if (typeof processAdminAction === 'function') {
+          response.data = processAdminAction(postData.data);
+          response.message = response.data.message;
+          response.success = response.data.success;
+        } else {
+          throw new Error('processAdminAction function not found');
+        }
         break;
         
       default:
         response.success = false;
-        response.message = 'Invalid action specified';
+        response.message = 'Invalid action specified: ' + action;
         break;
     }
 
+    Logger.log('POST response prepared successfully');
     return ContentService
       .createTextOutput(JSON.stringify(response))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
     Logger.log('doPost Error: ' + error.message);
+    Logger.log('Error stack: ' + error.stack);
+    
     const errorResponse = {
       success: false,
       data: null,
       message: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      errorType: error.constructor.name
     };
     
     return ContentService

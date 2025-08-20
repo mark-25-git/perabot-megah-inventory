@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perabot Megah Inventory System - MVP</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <div class="container">
+            <!-- Header -->
+            <header class="header">
+                <h1>Perabot Megah Inventory System</h1>
+                <p>MVP - Testing Google Sheets Connection</p>
+            </header>
+
+            <!-- Connection Status -->
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h3 class="card-title">Connection Status</h3>
+                </div>
+                <div class="card-body">
+                    <div id="connection-status" class="alert alert-info">
+                        <div class="alert-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <div class="alert-title">Testing Connection</div>
+                            <div class="alert-message">Click the button below to test Google Sheets connection</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <button id="test-connection" class="btn btn-primary">
+                            <i class="fas fa-plug"></i> Test Connection
+                        </button>
+                        <button id="fetch-inventory" class="btn btn-secondary">
+                            <i class="fas fa-database"></i> Fetch Inventory Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Display -->
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h3 class="card-title">Fetched Data</h3>
+                </div>
+                <div class="card-body">
+                    <div id="data-display">
+                        <div class="text-center text-neutral-500">
+                            <i class="fas fa-database text-4xl mb-4"></i>
+                            <p>No data fetched yet. Click the buttons above to test the connection.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Raw Response -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Raw API Response</h3>
+                </div>
+                <div class="card-body">
+                    <pre id="raw-response" class="bg-neutral-100 p-4 rounded text-sm overflow-auto">No response yet</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

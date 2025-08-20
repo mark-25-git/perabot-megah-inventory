@@ -1,0 +1,25 @@
+{
+  "name": "perabot-megah-inventory-system",
+  "version": "1.0.0",
+  "description": "MVP Inventory System with Google Sheets Integration",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "googleapis": "^128.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  },
+  "keywords": [
+    "inventory",
+    "google-sheets",
+    "vercel",
+    "api"
+  ],
+  "author": "Perabot Megah Team",
+  "license": "MIT"
+}
